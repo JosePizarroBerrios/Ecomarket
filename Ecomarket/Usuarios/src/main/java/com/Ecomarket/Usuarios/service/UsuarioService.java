@@ -27,7 +27,7 @@ public class UsuarioService {
     @Autowired
     private RolRepository rolRepository;
     @Autowired
-    private Reclamacion reclamacionRepository;
+    private ReclamacionRepository reclamacionRepository;
 
 
 
