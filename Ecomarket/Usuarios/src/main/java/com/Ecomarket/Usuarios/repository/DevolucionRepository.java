@@ -9,6 +9,6 @@ import com.Ecomarket.Usuarios.model.Devolucion;
 
 @Repository
 public interface DevolucionRepository extends JpaRepository<Devolucion,Long> {
-    List<Devolucion> findByClienteId(Long clienteId);
+    List<Devolucion> findByClienteId(Long idUsuario);
     
 }

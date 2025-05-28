@@ -11,24 +11,32 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class Producto {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    Long idProducto;     
 
-    @Column (nullable=false, unique = true)
-    private String nombreProducto;
+    @Column(unique = true, length = 100, nullable = false)
+    String nombreProducto;   
 
-    @Column (nullable=false, unique=true)
-    private int codigo;
+    @Column(length = 500, nullable = false)
+    String descripcionProducto;   
 
-    @Column (unique = true, length = 100, nullable=false)
-    private String descripcionProducto;
+    @Column(length = 50, nullable = false)
+    String categoriaProducto; 
 
-    @Column (nullable = false)
-    private int preciUnitario;
+    @Column(length = 50, nullable = false)
+    String marcaProducto;                    
+    
+    @Column(nullable = false)
+    double precioUnitarioProducto;   
 
-    @Column (nullable = false)
-    private int stock;
-    private String categoria;
+    @Column(nullable = false)
+    int stockProducto;                       
+    
+    @Column(nullable = false)
+    boolean activo;
+
+         
 
 }

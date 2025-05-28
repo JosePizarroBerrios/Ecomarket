@@ -1,7 +1,10 @@
 package com.Ecomarket.Usuarios.model;
 
 
-import java.util.LinkedHashSet;
+import java.util.ArrayList;
+import java.util.HashSet;
+
+import java.util.List;
 import java.util.Set;
 
 import jakarta.persistence.*;
@@ -20,28 +23,35 @@ public class Usuario {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private Long idUsuario;
 
     @Column(unique = false,length = 25,nullable = false)
-    private String nom_usuario;
+    private String nombreUsuario;
 
     @Column(unique = false,length = 25,nullable = false)
-    private String ap_usuario; 
+    private String apatUsuario; 
 
     @Column(unique = true,length = 50,nullable = false)
     private String emailUsuario;
 
     @Column(unique = false,length = 25,nullable = false)
-    private String contraseña_usuario;
+    private String contraseñaUsuario;
 
-    @Column(unique = true,length = 50,nullable = false) 
-    private String dir_usuario;
+    @Column(unique = false,length = 50,nullable = false) 
+    private String dirUsuario;
 
-    private String metodoPago;
+    @Column(unique = false, nullable = false)
+    private boolean activo;
 
-    private boolean activo = true;
+    @OneToMany(mappedBy = "usuario", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Tarjeta> tarjetas= new ArrayList<>();
 
-    @OneToMany(mappedBy = "usuario",cascade = CascadeType.ALL, orphanRemoval = true)
-    private Set<Rol> roles = new LinkedHashSet<>();
+    @ManyToMany(fetch = FetchType.LAZY)
+        @JoinTable(
+            name = "usuario_rol",
+            joinColumns = @JoinColumn(name = "idUsuario"),
+            inverseJoinColumns = @JoinColumn(name = "idRol")
+        )
+    private Set<Rol> roles = new HashSet<>();
 
 }

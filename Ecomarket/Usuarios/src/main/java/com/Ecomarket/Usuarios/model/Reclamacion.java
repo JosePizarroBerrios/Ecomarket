@@ -14,20 +14,29 @@ public class Reclamacion {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private Long id_reclamo;
 
     @Column(unique = true,length = 100,nullable = false)
-    private String asunto;
+    private String asunto_reclamo;
 
     @Column(unique = true,length = 200,nullable = false)
-    private String mensaje;
+    private String mensaje_reclamo;
 
     @Column (nullable = true)
-    private String fechaReclamo;
+    private String fechaReclamacion;
 
     @ManyToOne
-    @JoinColumn(name = "cliente_id")
-    private Usuario cliente;
+    @JoinColumn(name = "idUsuario")
+    private Usuario usuario;
 
+    @Column(nullable = false)
     private String estado;
+
+    public Reclamacion save(Reclamacion reclamacion) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'save'");
+    }
+
+
+
 }

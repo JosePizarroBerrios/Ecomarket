@@ -15,20 +15,22 @@ public class Devolucion {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private Long idDevolucion;
 
     @Column(unique = true,length = 200,nullable = false)
     private String motivo;
     
-    private Long productoId;
+    @Column(nullable = false)
+    private Long idVenta;
 
     @Column (nullable = true)
     private String fechaDevolucion;
 
     @ManyToOne
-    @JoinColumn(name = "cliente_id")
+    @JoinColumn(name = "idUsuario")
     private Usuario cliente;
 
+    @Column(nullable = false)
     private String estado; // Ej: "Pendiente", "Procesada"
 
 }

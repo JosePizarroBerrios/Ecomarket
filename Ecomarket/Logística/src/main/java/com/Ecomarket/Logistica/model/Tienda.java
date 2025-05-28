@@ -1,45 +1,42 @@
-package com.Ecomarket.Venta.model;
-
+package com.Ecomarket.Logistica.model;
 
 import java.util.List;
 
 import jakarta.persistence.Column;
+import jakarta.persistence.ElementCollection;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-    
+
 @Entity
-@Table(name = "ventas")
+@Table(name = "tienda")
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class Venta {
+public class Tienda {
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
-    private String idVenta;
+    private Long idTienda;
 
-
-    @Column(nullable = false, length = 50)
-    private Long clienteId;
-
-    @Column(nullable = false, length = 50)
-    private String fechaVenta;
-
-    @Column(nullable = false)
-    private int totalVenta;
+    @Column(unique = true, nullable = false, length = 100)
+    private String direccion;
 
     @Column(nullable = false, length = 50)
-    private String facturaId;
+    private String horarioApertura;
 
-    @OneToMany(mappedBy = "venta",
-               cascade = jakarta.persistence.CascadeType.ALL,
-               orphanRemoval = true)
-    private List<DetalleVenta> detallesVenta;
+    @Column(nullable = false, length = 50)
+    private String horarioCierre;
+
+    @Column(nullable = false, length = 50)
+    private String estado;
+
+    @ElementCollection
+    private List<String> personalAsignado; // IDs de empleados
+
 }

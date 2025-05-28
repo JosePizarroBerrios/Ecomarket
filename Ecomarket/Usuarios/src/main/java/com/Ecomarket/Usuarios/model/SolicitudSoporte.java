@@ -16,20 +16,22 @@ public class SolicitudSoporte {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private Long idSolicitud;
 
     @Column(unique = true,length = 200,nullable = false)
-    private String asunto;
+    private String asuntoSolicitud;
     
     @Column(unique = true,length = 200,nullable = false)
-    private String mensaje;
+    private String detalleSolicitud;
 
     @Column(nullable = true)
-    private String fechaSolicSoporte;
+    private String fechaSolicitud;
+
+    @Column(nullable = true)
+    private String estado; 
 
     @ManyToOne
-    @JoinColumn(name = "cliente_id")
-    private Usuario cliente;
+    @JoinColumn(name = "idUsuario")
+    private Usuario usuario;
 
-    private String estado; // Ej: "Enviado", "Atendido"
 }

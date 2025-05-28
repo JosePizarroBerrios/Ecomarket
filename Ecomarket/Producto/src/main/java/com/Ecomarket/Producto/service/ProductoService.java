@@ -18,7 +18,7 @@ public class ProductoService {
     private ProductoRepository productoRepository;
 
     public Producto agregarProducto(Producto producto){
-        if (productoRepository.existsByCodigo (producto.getCodigo())){
+        if (productoRepository.findById(producto.getIdProducto()) != null){
         throw new RuntimeException ("El codigo ingresado ya existe");
         }
         return productoRepository.save(producto);
@@ -29,7 +29,7 @@ public class ProductoService {
     }
 
     public Producto FindById (long id){
-        return productoRepository.findById(id).get();
+        return productoRepository.findByIdProducto(id);
     }
     
     public Producto save (Producto producto){

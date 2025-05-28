@@ -1,23 +1,18 @@
 package com.Ecomarket.Usuarios.service;
 
-
-
-import java.time.LocalDate;
-
-
 import java.util.List;
+
+import javax.management.openmbean.InvalidKeyException;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.Ecomarket.Usuarios.model.Devolucion;
+import com.Ecomarket.Usuarios.model.LoginRequest;
 import com.Ecomarket.Usuarios.model.Reclamacion;
-
+import com.Ecomarket.Usuarios.model.Rol;
+import com.Ecomarket.Usuarios.model.SolicitudSoporte;
 import com.Ecomarket.Usuarios.model.Usuario;
-import com.Ecomarket.Usuarios.repository.DevolucionRepository;
-import com.Ecomarket.Usuarios.repository.ReclamacionRepository;
-
-import com.Ecomarket.Usuarios.repository.UsuarioRepository;
+import com.Ecomarket.Usuarios.repository.*;
 import jakarta.transaction.Transactional;
 
 
@@ -26,88 +21,93 @@ import jakarta.transaction.Transactional;
 public class UsuarioService {
 
     @Autowired
-    private UsuarioRepository usuarioRepository;
-    
+    private  UsuarioRepository usuarioRepository;
     @Autowired
-    private DevolucionRepository devolucionRepository;
+    private SolicitudSoporteRepository solicitudSoporteRepository;
     @Autowired
-    private ReclamacionRepository reclamacionRepository;
+    private RolRepository rolRepository;
+    @Autowired
+    private Reclamacion reclamacionRepository;
 
+
+
+    public Usuario login(LoginRequest Request) {
+        for(Usuario usuario : usuarioRepository.findAll()) {
+            if(usuario.getEmailUsuario().equals(Request.getEmailUsuario()) && usuario.getContraseñaUsuario().equals(Request.getPassword())) {
+                return usuario;  // metodo que valida credenciales de usuario
+            }else {
+                throw new InvalidKeyException("Invalid email or password");
+            }   
+        }
+        throw new UnsupportedOperationException("Unimplemented method 'login'");
+    }
+
+    public List<Usuario> findAll() {
+        return usuarioRepository.findAll(); // metodo que devuelve todos los usuarios
+    }
+    public Usuario findByIdUsuario(Long id_usuario) {
+        for(Usuario usuario : usuarioRepository.findAll()) {
+            if(usuario.getIdUsuario().equals(id_usuario)) {
+                return usuario;  // metodo que busca un usuario por su id
+            }
+        }
+        throw new UnsupportedOperationException("Unimplemented method 'findByIdUsuario'");
+    }
+
+    public SolicitudSoporte saveSolicitudSoporte(SolicitudSoporte solicitudSoporte) {
+        solicitudSoporte.setEstado("Pendiente");
+        solicitudSoporte.setFechaSolicitud(java.time.LocalDateTime.now().toString());
+        
+        return solicitudSoporteRepository.save(solicitudSoporte); // metodo que guarda una solicitud de soporte
+    }
+
+    public void desactivarUsuario(Long id_usuario) {
+        Usuario usuario = findByIdUsuario(id_usuario);
+        if (usuario != null) {
+            usuario.setActivo(false); // metodo que desactiva un usuario
+            usuarioRepository.save(usuario);
+        } else {
+            throw new UnsupportedOperationException("Unimplemented method 'desactivarUsuario'");
+        }
+    }
+    public void activarUsuario(Long id_usuario) {
+        Usuario usuario = findByIdUsuario(id_usuario);
+        if (usuario != null) {
+            usuario.setActivo(true); // metodo que activa un usuario
+            usuarioRepository.save(usuario);
+        } else {
+            throw new UnsupportedOperationException("Unimplemented method 'activarUsuario'");
+        }
+    }
+    public Long findRolByNombre(String nombreRol) {
     
-
-    public List<Usuario> findAll(){
-        return usuarioRepository.findAll();
-    }
-    public Usuario findById(Long id) {
-        return usuarioRepository.findById(id).orElse(null);
-    }
-
-    public Usuario autenticar(String email, String contrasena) {
-        Usuario usuario = usuarioRepository.findByEmailUsuario(email)
-            .orElseThrow(() -> new RuntimeException("Email no registrado"));
-
-    if (!usuario.isActivo()) {
-        throw new RuntimeException("La cuenta está desactivada");
-    }
-    
-    if (!usuario.getContraseña_usuario().equals(contrasena)) {
-        throw new RuntimeException("Contraseña incorrecta");
+        for(Rol rol : rolRepository.findAll()) {
+            if(rol.getNombreRol().equals(nombreRol)) {
+                return rol.getIdRol();  
+            }
+        }
+        return null;  
     }
 
-    return usuario;
-
-    }
-    public Usuario registrarCliente(String nombre, String email, String contrasena) {
-    if (usuarioRepository.existsByEmailUsuario(email)) {
-        throw new RuntimeException("El email ya está en uso");
-    }
-    Usuario nuevo = new Usuario();
-    nuevo.setNom_usuario(nombre);
-    nuevo.setEmailUsuario(email);
-    nuevo.setContraseña_usuario(contrasena); 
-    nuevo.setActivo(true);
-
-    return usuarioRepository.save(nuevo);
-    }
-
-
-    
-    
-    public Usuario save(Usuario usuario) {
-        return usuarioRepository.save(usuario);
-    }
-
-
-
-
-
-
-    public Devolucion registrarDevolucion(Long usuarioId, String motivo, Long productoId) {
-        Usuario cliente = usuarioRepository.findById(usuarioId)
-            .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
-
-        Devolucion devolucion = new Devolucion();
-        devolucion.setCliente(cliente);
-        devolucion.setMotivo(motivo);
-        devolucion.setProductoId(productoId); // solo se guarda el ID
-        devolucion.setFechaDevolucion(LocalDate.now().toString());
-        devolucion.setEstado("Solicitada");
-
-        return devolucionRepository.save(devolucion);
-    }
-    public Reclamacion registrarReclamo(Long usuarioId, String asunto, String descripcion) {
-        Usuario cliente = usuarioRepository.findById(usuarioId)
-            .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
-
-        Reclamacion reclamacion = new Reclamacion();
-        reclamacion.setCliente(cliente);
-        reclamacion.setAsunto(asunto);
-        reclamacion.setMensaje(descripcion);
-        reclamacion.setFechaReclamo(LocalDate.now().toString());
+    public Reclamacion saveReclamacion(Reclamacion reclamacion) {
         reclamacion.setEstado("Pendiente");
-
-        return reclamacionRepository.save(reclamacion);
+        reclamacion.setFechaReclamacion(java.time.LocalDateTime.now().toString());
+        return reclamacionRepository.save(reclamacion); // metodo que guarda una reclamacion
     }
+
+    public Usuario save(Usuario usuario) {
+        if (usuario.getIdUsuario() == null) {
+            usuario.setActivo(true); // Si es un nuevo usuario, se activa por defecto
+            usuarioRepository.save(usuario);
+        }
+        
+        return usuario; // metodo que guarda un usuario
+    }
+
+
+    
+
+
 }
 
 

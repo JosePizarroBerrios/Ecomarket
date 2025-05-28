@@ -17,7 +17,7 @@ public class Cupon {
     
     @Id
     @Column( length= 25, nullable = true)
-    private String codigo;
+    private String codigoCupon;
 
     @Column(nullable = false)
     private BigDecimal descuento;

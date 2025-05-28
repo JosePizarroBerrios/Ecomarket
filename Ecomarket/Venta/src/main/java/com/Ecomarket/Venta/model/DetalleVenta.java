@@ -21,7 +21,7 @@ public class DetalleVenta {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private Long detalleId;
 
     @Column (unique =false , length = 20, nullable = false)
     private String nombreProducto;
@@ -32,5 +32,7 @@ public class DetalleVenta {
     @Column( precision = 10, scale = 2, nullable = false)
     private BigDecimal precioUnitario;
 
-    // Elimina la relación recursiva con Venta
+    @Column( nullable = false)
+    private Long idVenta;
+
 }
